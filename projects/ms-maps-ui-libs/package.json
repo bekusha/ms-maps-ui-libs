@@ -1,6 +1,6 @@
 {
   "name": "ms-maps-ui-libs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Angular OpenLayers UI components library for interactive maps",
   "author": "Beka",
   "license": "MIT",
@@ -26,7 +26,7 @@
   "typings": "index.d.ts",
   "exports": {
     ".": {
-      "import": "./esm2022/ms-maps-ui-libs.mjs",
+      "import": "./fesm2022/ms-maps-ui-libs.mjs",
       "require": "./fesm2022/ms-maps-ui-libs.mjs"
     }
   },
