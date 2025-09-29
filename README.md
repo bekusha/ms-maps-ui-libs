@@ -1,59 +1,154 @@
-# AngularOpenlayersWorkspace
+# MS Maps UI Library
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
+A modern Angular library for integrating OpenLayers maps with WKT (Well-Known Text) geometry support.
 
-## Development server
+[![npm version](https://badge.fury.io/js/ms-maps-ui-libs.svg)](https://badge.fury.io/js/ms-maps-ui-libs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-To start a local development server, run:
+## Features
 
-```bash
-ng serve
-```
+- 🗺️ **Interactive Maps**: Built on OpenLayers 10.x for robust mapping capabilities
+- 📐 **WKT Support**: Render POINT, LINESTRING, POLYGON, and other geometry types
+- 🎨 **Customizable Styling**: Configure colors, borders, and styling for map features
+- ⚡ **Angular 20+**: Modern Angular with standalone components and modern patterns
+- 🔧 **TypeScript**: Full type safety with comprehensive interfaces
+- 📱 **Responsive**: Flexible sizing and responsive design
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Installation
 
 ```bash
-ng generate --help
+npm install ms-maps-ui-libs @angular/common @angular/core ol
 ```
 
-## Building
+### Peer Dependencies
 
-To build the project run:
+Make sure you have the required peer dependencies installed:
 
 ```bash
-ng build
+npm install @angular/common@^20.3.0 @angular/core@^20.3.0 ol@^10.6.1
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Quick Start
 
-## Running unit tests
+### Basic Setup
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+1. Import the library module in your Angular application:
 
-```bash
-ng test
+```typescript
+import { MsMapsUiLibsModule } from 'ms-maps-ui-libs';
+
+@NgModule({
+  imports: [MsMapsUiLibsModule],
+  // ... other module configuration
+})
+export class YourModule { }
 ```
 
-## Running end-to-end tests
+2. Use the map component in your template:
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```html
+<ms-map 
+  [wkt]="sampleWKT"
+  [center]="[2.3522, 48.8566]"
+  [zoom]="15"
+  [width]="'100%'"
+  [height]="'500px'">
+</ms-map>
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Standalone Component Usage (Angular 14+)
 
-## Additional Resources
+```typescript
+import { Component } from '@angular/core';
+import { MapComponent } from 'ms-maps-ui-libs';
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [MapComponent],
+  template: `
+    <ms-map 
+      [wkt]="polygonWKT"
+      [center]="[2.3522, 48.8566]"
+      [zoom]="15"
+      [width]="'100%'"
+      [height]="'500px'"
+      [borderColor]="'#ff0000'"
+      [fillColor]="'rgba(255, 0, 0, 0.3)'">
+    </ms-map>
+  `
+})
+export class ExampleComponent {
+  polygonWKT = 'POLYGON((2.3522 48.8566, 2.3522 48.8576, 2.3532 48.8576, 2.3532 48.8566, 2.3522 48.8566))';
+}
+```
+
+## Component API
+
+### Inputs
+
+| Input | Type | Default | Description |
+|-------|------|---------|-------------|
+| `wkt` | `string` | `''` | WKT geometry string to render |
+| `center` | `[number, number]` | `[0, 0]` | Map center coordinates [longitude, latitude] |
+| `zoom` | `number` | `10` | Initial zoom level |
+| `width` | `string` | `'100%'` | Map container width |
+| `height` | `string` | `'400px'` | Map container height |
+| `borderColor` | `string` | `'rgba(0, 0, 255, 1)'` | Border color for features |
+| `fillColor` | `string` | `'rgba(255, 255, 255, 0.5)'` | Fill color for features |
+| `pointColor` | `string` | `'rgba(0, 0, 255, 1)'` | Color for point features |
+| `pointBorderColor` | `string` | `'rgba(255, 255, 255, 1)'` | Border color for point features |
+
+### Methods
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `updateWKT(wkt: string)` | `wkt: WKT string` | Programmatically update the displayed geometry |
+
+## Supported WKT Geometry Types
+
+- `POINT`
+- `LINESTRING`
+- `POLYGON`
+- `MULTIPOINT`
+- `MULTILINESTRING`
+- `MULTIPOLYGON`
+- `GEOMETRYCOLLECTION`
+
+## WKT Examples
+
+```typescript
+// Point
+const pointWKT = 'POINT(-74.006 40.7128)';
+
+// LineString
+const lineWKT = 'LINESTRING(-74.006 40.7128, -73.935 40.730, -73.990 40.750)';
+
+// Polygon
+const polygonWKT = 'POLYGON((-74.020 40.700, -74.000 40.700, -74.000 40.720, -74.020 40.720, -74.020 40.700))';
+```
+
+## Browser Support
+
+This library supports all modern browsers that are compatible with:
+- Angular 20+
+- OpenLayers 10.x
+- ES2022
+
+## Links
+
+- **npm Package**: https://www.npmjs.com/package/ms-maps-ui-libs
+- **GitLab Repository**: https://gitlab.municipal.gov.ge/map/ms-maps-ui-libs
+- **Issues**: https://gitlab.municipal.gov.ge/map/ms-maps-ui-libs/-/issues
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
