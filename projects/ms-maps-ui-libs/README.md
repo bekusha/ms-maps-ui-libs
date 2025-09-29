@@ -16,13 +16,7 @@ An Angular library for interactive maps using OpenLayers. This library provides 
 In your consuming Angular project, install the library and its peer dependencies:
 
 ```bash
-npm install ol @types/ol
-```
-
-Then install this library locally (since it's not published to npm yet):
-
-```bash
-npm install path/to/your/dist/ms-maps-ui-libs
+npm install ms-maps-ui-libs @angular/common @angular/core ol
 ```
 
 ## Usage
