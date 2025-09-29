@@ -32,8 +32,6 @@
     {
       "path": "./projects/ms-maps-ui-libs/tsconfig.lib.json"
     },
-    {
-      "path": "./projects/demo-app/tsconfig.app.json"
-    }
+
   ]
 }

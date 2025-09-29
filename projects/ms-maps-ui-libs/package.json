@@ -1,0 +1,43 @@
+{
+  "name": "ms-maps-ui-libs",
+  "version": "0.0.1",
+  "description": "Angular OpenLayers UI components library for interactive maps",
+  "author": "Beka",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/angular-openlayers-workspace.git",
+    "directory": "projects/ms-maps-ui-libs"
+  },
+  "homepage": "https://github.com/yourusername/angular-openlayers-workspace#readme",
+  "bugs": {
+    "url": "https://github.com/yourusername/angular-openlayers-workspace/issues"
+  },
+  "keywords": [
+    "angular",
+    "openlayers",
+    "maps",
+    "wkt",
+    "geometry",
+    "gis",
+    "mapping",
+    "typescript"
+  ],
+  "main": "fesm2022/ms-maps-ui-libs.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./esm2022/ms-maps-ui-libs.mjs",
+      "require": "./fesm2022/ms-maps-ui-libs.mjs"
+    }
+  },
+  "peerDependencies": {
+    "@angular/common": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "ol": "^10.6.1"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
