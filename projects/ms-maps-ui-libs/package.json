@@ -6,12 +6,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/angular-openlayers-workspace.git",
-    "directory": "projects/ms-maps-ui-libs"
+    "url": "https://gitlab.municipal.gov.ge/map/ms-maps-ui-libs.git"
   },
-  "homepage": "https://github.com/yourusername/angular-openlayers-workspace#readme",
+  "homepage": "https://gitlab.municipal.gov.ge/map/ms-maps-ui-libs#readme",
   "bugs": {
-    "url": "https://github.com/yourusername/angular-openlayers-workspace/issues"
+    "url": "https://gitlab.municipal.gov.ge/map/ms-maps-ui-libs/-/issues"
   },
   "keywords": [
     "angular",
