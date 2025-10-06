@@ -1,4 +1,4 @@
-# MS Maps UI Libs
+# MS Maps Map Viewer
 
 An Angular library for interactive maps using OpenLayers. This library provides Angular components for displaying maps with WKT geometry support.
 
@@ -16,7 +16,7 @@ An Angular library for interactive maps using OpenLayers. This library provides 
 In your consuming Angular project, install the library and its peer dependencies:
 
 ```bash
-npm install ms-maps-ui-libs @angular/common @angular/core ol
+npm install ms-maps-map-viewer @angular/common @angular/core ol
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ npm install ms-maps-ui-libs @angular/common @angular/core ol
 
 ```typescript
 import { Component } from '@angular/core';
-import { MapComponent } from 'ms-maps-ui-libs';
+import { MapComponent } from 'ms-maps-map-viewer';
 
 @Component({
   selector: 'app-my-component',
@@ -52,12 +52,12 @@ export class MyComponent {
 
 ```typescript
 // In your app.module.ts or feature module
-import { MsMapsUiLibsModule } from 'ms-maps-ui-libs';
+import { MsMapsMapViewerModule } from 'ms-maps-map-viewer';
 
 @NgModule({
   imports: [
     // ... other imports
-    MsMapsUiLibsModule
+    MsMapsMapViewerModule
   ],
   // ...
 })
@@ -150,10 +150,10 @@ If the map is not visible in your consuming project, ensure:
 To build the library:
 
 ```bash
-ng build ms-maps-ui-libs
+ng build ms-maps-map-viewer
 ```
 
-The built library will be available in `dist/ms-maps-ui-libs/`.
+The built library will be available in `dist/ms-maps-map-viewer/`.
 
 ## Dependencies
 

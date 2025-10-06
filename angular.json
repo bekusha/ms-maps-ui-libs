@@ -7,16 +7,16 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "ms-maps-ui-libs": {
+    "ms-maps-map-viewer": {
       "projectType": "library",
-      "root": "projects/ms-maps-ui-libs",
-      "sourceRoot": "projects/ms-maps-ui-libs/src",
+      "root": "projects/ms-maps-map-viewer",
+      "sourceRoot": "projects/ms-maps-map-viewer/src",
       "prefix": "ms",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "options": {
-            "tsConfig": "projects/ms-maps-ui-libs/tsconfig.lib.json"
+            "tsConfig": "projects/ms-maps-map-viewer/tsconfig.lib.json"
           }
         }
       }

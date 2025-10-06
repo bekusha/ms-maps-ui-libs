@@ -1,17 +1,9 @@
 {
-  "name": "ms-maps-ui-libs",
+  "name": "ms-maps-map-viewer",
   "version": "0.0.3",
   "description": "Angular OpenLayers UI components library for interactive maps",
   "author": "Beka",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://gitlab.municipal.gov.ge/map/ms-maps-ui-libs.git"
-  },
-  "homepage": "https://gitlab.municipal.gov.ge/map/ms-maps-ui-libs#readme",
-  "bugs": {
-    "url": "https://gitlab.municipal.gov.ge/map/ms-maps-ui-libs/-/issues"
-  },
   "keywords": [
     "angular",
     "openlayers",
@@ -22,12 +14,12 @@
     "mapping",
     "typescript"
   ],
-  "main": "fesm2022/ms-maps-ui-libs.mjs",
+  "main": "fesm2022/ms-maps-map-viewer.mjs",
   "typings": "index.d.ts",
   "exports": {
     ".": {
-      "import": "./fesm2022/ms-maps-ui-libs.mjs",
-      "require": "./fesm2022/ms-maps-ui-libs.mjs"
+      "import": "./fesm2022/ms-maps-map-viewer.mjs",
+      "require": "./fesm2022/ms-maps-map-viewer.mjs"
     }
   },
   "peerDependencies": {

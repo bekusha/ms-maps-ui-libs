@@ -11,4 +11,4 @@ import { MapComponent } from './map/map';
     MapComponent
   ]
 })
-export class MsMapsUiLibsModule { }
+export class MsMapsMapViewerModule { }
