@@ -1,0 +1,19 @@
+image: node:22.13.0
+stages:
+  - build
+variables:
+  K8S__IMAGE: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
+services:
+- docker:dind
+build-master:
+  stage: build
+  only:
+    - main
+  script:
+    - echo "//npm.msda.ge/:_authToken=\"${NPM_TOKEN}\"" > ~/.npmrc
+    - echo "@msda:registry=https://npm.msda.ge/" >> ~/.npmrc
+    - cat ~/.npmrc
+    - npm install
+    - npm run build:ms-maps-map-viewer
+    - cd ./dist/ms-maps-map-viewer
+    - npm publish --scope=@msda
