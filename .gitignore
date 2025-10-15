@@ -119,3 +119,6 @@ jspm_packages/
 
 # TernJS port file
 .tern-port
+
+# MSDA
+.package-lock.json
