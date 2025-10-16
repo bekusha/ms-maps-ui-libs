@@ -20,6 +20,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
   @Input() fillColor: string = 'rgba(255, 255, 255, 0.5)';
   @Input() pointColor: string = 'rgba(0, 0, 255, 1)';
   @Input() pointBorderColor: string = 'rgba(255, 255, 255, 1)';
+  @Input() mapConfigObject: any = {};
 
   private mapConfig: MapConfig = this.getDefaultMapConfig();
   private styleConfig: MapStyleConfig = this.getDefaultStyleConfig();
@@ -49,6 +50,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
     if (this.mapService.getMap() && this.hasStyleChanges(changes)) {
       this.updateMapStyling();
     }
+
+    // Handle mapConfigObject changes - reinitialize map if base layer changes
+    if (this.mapService.getMap() && changes['mapConfigObject']) {
+      this.reinitializeMap();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -64,6 +70,15 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
 
   private initializeMap(): void {
     this.mapService.initializeMap(this.mapContainer, this.mapConfig, this.styleConfig);
+  }
+
+  private reinitializeMap(): void {
+    // Destroy current map and reinitialize with new configuration
+    this.mapService.destroyMap();
+    this.initializeMap();
+    if (this.wkt) {
+      this.renderWKT();
+    }
   }
 
   private renderWKT(): void {
@@ -101,7 +116,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
 
   // Update configurations from input properties
   private updateConfigurations(): void {
-    this.mapConfig = {
+    // Start with default configuration
+    const defaultConfig = {
       width: this.width,
       height: this.height,
       zoom: this.zoom,
@@ -110,6 +126,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
       attributionCollapsible: true,
       attributionCollapsed: false
     };
+
+    // Merge with mapConfigObject if provided, only considering baseLayerUrlTpl
+    this.mapConfig = this.mapConfigObject ? {
+      ...defaultConfig,
+      baseLayerUrlTpl: this.mapConfigObject.baseLayerUrlTpl
+    } : defaultConfig;
 
     this.styleConfig = {
       borderColor: this.borderColor,

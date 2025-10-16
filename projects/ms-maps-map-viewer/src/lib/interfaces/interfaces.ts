@@ -6,6 +6,7 @@ export interface MapConfig {
   attribution?: boolean;
   attributionCollapsible?: boolean;
   attributionCollapsed?: boolean;
+  baseLayerUrlTpl?: string; // Custom base layer URL template
 }
 
 export interface MapStyleConfig {

@@ -3,6 +3,7 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
+import XYZ from 'ol/source/XYZ';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
@@ -45,13 +46,14 @@ export class MapService {
       // Create attribution control
       const attributionControl = this.createAttributionControl(config);
 
+      // Create base layer based on configuration
+      const baseLayer = this.createBaseLayer(config);
+
       // Create the map
       this.map = new Map({
         target: mapContainer.nativeElement,
         layers: [
-          new TileLayer({
-            source: new OSM(),
-          }),
+          baseLayer,
           this.vectorLayer,
         ],
         view: new View({
@@ -176,6 +178,27 @@ export class MapService {
       collapsed: config.attributionCollapsed || false,
       className: 'custom-attribution'
     });
+  }
+
+  /**
+   * Creates the base layer based on configuration
+   * Uses custom URL template if provided, otherwise defaults to OSM
+   */
+  private createBaseLayer(config: MapConfig): TileLayer<XYZ | OSM> {
+    if (config.baseLayerUrlTpl) {
+      console.info('Using custom base layer with URL template:', config.baseLayerUrlTpl);
+      return new TileLayer({
+        source: new XYZ({
+          url: config.baseLayerUrlTpl,
+          crossOrigin: 'anonymous'
+        }),
+      });
+    } else {
+      console.info('Using default OSM base layer');
+      return new TileLayer({
+        source: new OSM(),
+      });
+    }
   }
 
   /**
