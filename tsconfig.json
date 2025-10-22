@@ -8,8 +8,8 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "paths": {
-      "ms-maps-ui-libs": [
-        "./dist/ms-maps-ui-libs"
+      "ms-maps-map-viewer": [
+        "./dist/ms-maps-map-viewer"
       ]
     },
     "noFallthroughCasesInSwitch": true,
@@ -31,8 +31,13 @@
   "files": [],
   "references": [
     {
-      "path": "./projects/ms-maps-ui-libs/tsconfig.lib.json"
+      "path": "./projects/ms-maps-map-viewer/tsconfig.lib.json"
     },
-
+    {
+      "path": "./projects/testing-libs-app/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/testing-libs-app/tsconfig.spec.json"
+    }
   ]
 }
