@@ -63,7 +63,6 @@ export class MapService {
         controls: [attributionControl],
       });
 
-      console.info('Map initialized successfully');
       return this.map;
     } catch (error) {
       console.error('Failed to initialize map:', error);
@@ -93,8 +92,7 @@ export class MapService {
         vectorSource.clear();
         // Add the new feature
         vectorSource.addFeature(feature);
-        
-        console.info('WKT feature rendered successfully');
+
         return true;
       }
       return false;
@@ -160,7 +158,6 @@ export class MapService {
       this.map.setTarget(undefined);
       this.map = undefined;
       this.vectorLayer = undefined;
-      console.info('Map destroyed');
     }
   }
 
@@ -186,14 +183,12 @@ export class MapService {
    */
   private createBaseLayer(config: MapConfig): TileLayer<XYZ | OSM> {
     if (config.baseLayerUrlTpl) {
-      console.info('Using custom base layer with URL template:', config.baseLayerUrlTpl);
       return new TileLayer({
         source: new XYZ({
           url: config.baseLayerUrlTpl
         }),
       });
     } else {
-      console.info('Using default OSM base layer');
       return new TileLayer({
         source: new OSM(),
       });
