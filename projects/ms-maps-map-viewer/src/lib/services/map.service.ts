@@ -189,8 +189,7 @@ export class MapService {
       console.info('Using custom base layer with URL template:', config.baseLayerUrlTpl);
       return new TileLayer({
         source: new XYZ({
-          url: config.baseLayerUrlTpl,
-          crossOrigin: 'anonymous'
+          url: config.baseLayerUrlTpl
         }),
       });
     } else {
