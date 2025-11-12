@@ -23,9 +23,3 @@
   <p><strong>WKT Geometry:</strong></p>
   <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; overflow-x: auto;">{{ wktGeometry() || 'No geometry drawn' }}</pre>
 </div>
-
-<div style="margin-top: 16px;" *ngIf="geometryDrawnEvent()">
-  <p><strong>Last Draw Event:</strong></p>
-  <p>Tool: {{ geometryDrawnEvent()?.tool }}</p>
-  <p>Timestamp: {{ geometryDrawnEvent() | json }}</p>
-</div>
