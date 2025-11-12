@@ -29,3 +29,19 @@ export interface WKTFeature {
   dataProjection?: string;
   featureProjection?: string;
 }
+
+export enum MapMode {
+  VIEW = 'VIEW',
+  EDIT = 'EDIT'
+}
+
+export enum EditToolType {
+  POINT = 'POINT',
+  LINE = 'LINE',
+  POLYGON = 'POLYGON'
+}
+
+export interface MapDrawEvent {
+  wkt: string;
+  tool: EditToolType;
+}

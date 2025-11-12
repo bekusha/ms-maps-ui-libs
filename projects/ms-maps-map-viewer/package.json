@@ -1,6 +1,6 @@
 {
   "name": "ms-maps-map-viewer",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Angular OpenLayers UI components library for interactive maps",
   "author": "Beka",
   "license": "MIT",

@@ -9,7 +9,7 @@
     "noImplicitReturns": true,
     "paths": {
       "ms-maps-map-viewer": [
-        "./dist/ms-maps-map-viewer"
+        "./projects/ms-maps-map-viewer/src/public-api"
       ]
     },
     "noFallthroughCasesInSwitch": true,
