@@ -6,6 +6,7 @@ An Angular library for interactive maps using OpenLayers. This library provides 
 
 - 🗺️ Interactive OpenLayers-based maps
 - 📍 WKT (Well-Known Text) geometry support
+- ✏️ Edit mode with drawing tools (Point, Line, Polygon)
 - 🎨 Customizable styling for points, lines, and polygons
 - 📱 Responsive design
 - 🔧 Easy integration with Angular applications
@@ -86,17 +87,118 @@ Then use in your component template:
 | `width` | `string` | `'100%'` | Map container width |
 | `height` | `string` | `'400px'` | Map container height |
 | `zoom` | `number` | `10` | Initial zoom level |
-| `center` | `[number, number]` | `[0, 0]` | Initial center coordinates [longitude, latitude] |
+| `center` | `[number, number]` | `[44.7872, 41.7151]` | Initial center coordinates [longitude, latitude] (Tbilisi by default) |
 | `borderColor` | `string` | `'rgba(0, 0, 255, 1)'` | Color for geometry borders/strokes |
 | `fillColor` | `string` | `'rgba(255, 255, 255, 0.5)'` | Fill color for polygon geometries |
 | `pointColor` | `string` | `'rgba(0, 0, 255, 1)'` | Color for point geometries |
 | `pointBorderColor` | `string` | `'rgba(255, 255, 255, 1)'` | Border color for point geometries |
+| `mode` | `MapMode` | `MapMode.VIEW` | Map mode: `VIEW` (display only) or `EDIT` (drawing enabled) |
+| `editOptions` | `EditToolType[]` | `[EditToolType.POINT]` | Available drawing tools in edit mode: `POINT`, `LINE`, `POLYGON` |
+| `mapConfigObject` | `Partial<MapConfig> \| null` | `null` | Advanced map configuration (e.g., custom base layer URL) |
+
+### Outputs
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `geometryDrawn` | `EventEmitter<MapDrawEvent>` | Emitted when a geometry is drawn in edit mode. Contains `wkt` string and `tool` type. |
 
 ### Methods
 
 | Method | Parameters | Description |
 |--------|------------|-------------|
 | `updateWKT(wkt: string)` | `wkt`: WKT string | Programmatically update the displayed geometry |
+
+## Edit Mode
+
+The component supports two modes: `VIEW` (default) and `EDIT`. In edit mode, users can draw geometries directly on the map.
+
+### Basic Edit Mode Usage
+
+```typescript
+import { Component } from '@angular/core';
+import { MapComponent, MapMode, EditToolType, MapDrawEvent } from 'ms-maps-map-viewer';
+
+@Component({
+  selector: 'app-my-component',
+  standalone: true,
+  imports: [MapComponent],
+  template: `
+    <ms-map 
+      [mode]="MapMode.EDIT"
+      [editOptions]="[EditToolType.POINT, EditToolType.LINE, EditToolType.POLYGON]"
+      (geometryDrawn)="onGeometryDrawn($event)"
+      width="100%"
+      height="500px">
+    </ms-map>
+  `
+})
+export class MyComponent {
+  readonly MapMode = MapMode;
+  readonly EditToolType = EditToolType;
+
+  onGeometryDrawn(event: MapDrawEvent): void {
+    console.log('Drawn geometry:', event.wkt);
+    console.log('Tool used:', event.tool);
+  }
+}
+```
+
+### Edit Mode Features
+
+- **Toolbar**: When multiple edit options are provided, a toolbar appears on the map with buttons to switch between tools
+- **Auto-centering**: When entering edit mode, the map automatically centers on Tbilisi (44.7872, 41.7151)
+- **Drawing**: Click on the map to start drawing. For polygons and lines, click to add points and double-click to finish
+- **Event emission**: After completing a drawing, the `geometryDrawn` event is emitted with the WKT string
+
+### Available Drawing Tools
+
+- **POINT**: Draw single points
+- **LINE**: Draw line strings (LINESTRING)
+- **POLYGON**: Draw polygons
+
+## Types and Enums
+
+The library exports the following types and enums:
+
+```typescript
+import { 
+  MapMode, 
+  EditToolType, 
+  MapDrawEvent, 
+  MapConfig, 
+  MapStyleConfig,
+  WKTFeature 
+} from 'ms-maps-map-viewer';
+
+// Enums
+enum MapMode {
+  VIEW = 'VIEW',
+  EDIT = 'EDIT'
+}
+
+enum EditToolType {
+  POINT = 'POINT',
+  LINE = 'LINE',
+  POLYGON = 'POLYGON'
+}
+
+// Interfaces
+interface MapDrawEvent {
+  wkt: string;
+  tool: EditToolType;
+}
+
+interface MapConfig {
+  width: string;
+  height: string;
+  zoom: number;
+  center: [number, number];
+  attribution?: boolean;
+  attributionCollapsible?: boolean;
+  attributionCollapsed?: boolean;
+  baseLayerUrlTpl?: string;
+}
+```
 
 ## WKT Examples
 

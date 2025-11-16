@@ -10,8 +10,11 @@ import Feature from 'ol/Feature';
 import { fromLonLat } from 'ol/proj';
 import WKT from 'ol/format/WKT';
 import Attribution from 'ol/control/Attribution';
-import { MapConfig, MapStyleConfig, MapViewOptions, WKTFeature } from '../interfaces';
 import { Style, Stroke, Fill, Circle } from 'ol/style';
+import Draw from 'ol/interaction/Draw';
+import { EventsKey } from 'ol/events';
+import { unByKey } from 'ol/Observable';
+import { EditToolType, MapConfig, MapDrawEvent, MapStyleConfig, MapViewOptions, WKTFeature } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +24,8 @@ export class MapService {
   private vectorLayer?: VectorLayer<VectorSource>;
   private currentConfig?: MapConfig;
   private currentStyleConfig?: MapStyleConfig;
+  private drawInteraction?: Draw;
+  private drawListeners: EventsKey[] = [];
 
   constructor() {}
 
@@ -154,6 +159,7 @@ export class MapService {
    * Destroy the map instance
    */
   destroyMap(): void {
+    this.disableDrawing();
     if (this.map) {
       this.map.setTarget(undefined);
       this.map = undefined;
@@ -242,5 +248,73 @@ export class MapService {
         return this.createGeometryStyle(config);
       }
     };
+  }
+
+  clearFeatures(): void {
+    const vectorSource = this.vectorLayer?.getSource();
+    vectorSource?.clear();
+  }
+
+  enableDrawing(tool: EditToolType, onComplete: (event: MapDrawEvent) => void): void {
+    if (!this.map || !this.vectorLayer) {
+      console.warn('Cannot enable drawing: map or vector layer not available');
+      return;
+    }
+
+    const vectorSource = this.vectorLayer.getSource();
+    if (!vectorSource) {
+      console.warn('Cannot enable drawing: vector source not available');
+      return;
+    }
+
+    this.disableDrawing();
+    vectorSource.clear();
+
+    const geometryType = this.mapToolToGeometry(tool);
+    this.drawInteraction = new Draw({
+      source: vectorSource,
+      type: geometryType
+    });
+
+    this.drawListeners.push(this.drawInteraction.on('drawstart', () => {
+      vectorSource.clear();
+    }));
+
+    this.drawListeners.push(this.drawInteraction.on('drawend', (event) => {
+      const feature = event.feature as Feature;
+      const format = new WKT();
+      const wkt = format.writeFeature(feature, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+      onComplete({ wkt, tool });
+    }));
+
+    this.map.addInteraction(this.drawInteraction);
+  }
+
+  disableDrawing(): void {
+    if (this.map && this.drawInteraction) {
+      this.map.removeInteraction(this.drawInteraction);
+    }
+
+    if (this.drawListeners.length) {
+      this.drawListeners.forEach(listener => unByKey(listener));
+      this.drawListeners = [];
+    }
+
+    this.drawInteraction = undefined;
+  }
+
+  private mapToolToGeometry(tool: EditToolType): 'Point' | 'LineString' | 'Polygon' {
+    switch (tool) {
+      case EditToolType.LINE:
+        return 'LineString';
+      case EditToolType.POLYGON:
+        return 'Polygon';
+      case EditToolType.POINT:
+      default:
+        return 'Point';
+    }
   }
 }

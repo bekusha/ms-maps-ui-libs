@@ -1,7 +1,19 @@
-<div 
-  #mapContainer 
-  class="map-container"
-  [style.width]="width"
-  [style.height]="height"
+<div class="map-wrapper" [class.edit-mode]="mode === MapMode.EDIT">
+  <div
+    #mapContainer
+    class="map-container"
+    [style.width]="width"
+    [style.height]="height"
   >
+    <div *ngIf="showEditToolbar" class="map-toolbar">
+      <button
+        type="button"
+        *ngFor="let option of editOptions"
+        (click)="selectEditTool(option)"
+        [class.active]="option === activeEditTool"
+      >
+        {{ option }}
+      </button>
+    </div>
+  </div>
 </div>
