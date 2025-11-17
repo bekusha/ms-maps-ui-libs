@@ -13,6 +13,7 @@ import { MapService } from '../services';
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef;
   @Input() wkt: string = '';
+  @Input() wktList: string[] = [];
   @Input() width: string = '100%';
   @Input() height: string = '400px';
   @Input() zoom: number = 10;
@@ -86,7 +87,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
 
   ngAfterViewInit(): void {
     this.initializeMap();
-    if (this.mode === MapMode.VIEW && this.wkt) {
+    if (this.mode === MapMode.VIEW && this.hasWKTToRender()) {
       this.renderWKT();
     } else if (this.mode === MapMode.EDIT) {
       this.enterEditMode();
@@ -106,32 +107,55 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
     // Destroy current map and reinitialize with new configuration
     this.mapService.destroyMap();
     this.initializeMap();
-    if (this.wkt) {
+    if (this.hasWKTToRender()) {
       this.renderWKT();
     }
   }
 
-  private renderWKT(): void {
-    if (!this.wkt) {
-      return;
+  /**
+   * Check if there's any WKT data to render
+   */
+  private hasWKTToRender(): boolean {
+    return (this.wktList && this.wktList.length > 0) || !!this.wkt;
+  }
+
+  private renderWKT(): boolean {
+    // Early return for defensive programming - prevents unnecessary work if called without WKT data
+    if (!this.hasWKTToRender()) {
+      return false;
     }
 
-    const wktFeature: WKTFeature = {
-      wkt: this.wkt,
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    };
-
-    const success = this.mapService.renderWKT(wktFeature);
-    if (success) {
-      this.mapService.fitToFeatures();
+    // Priority: wktList > wkt
+    if (this.wktList && this.wktList.length > 0) {
+      const wktFeatures: WKTFeature[] = this.wktList.map(wkt => ({
+        wkt: wkt,
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      }));
+      const success = this.mapService.renderWKTList(wktFeatures);
+      if (success) {
+        this.mapService.fitToFeatures();
+      }
+      return success;
+    } else if (this.wkt) {
+      const wktFeature: WKTFeature = {
+        wkt: this.wkt,
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      };
+      const success = this.mapService.renderWKT(wktFeature);
+      if (success) {
+        this.mapService.fitToFeatures();
+      }
+      return success;
     }
+    return false;
   }
 
   // Public method to update WKT
   updateWKT(wkt: string): void {
     this.wkt = wkt;
-    if (this.mode === MapMode.VIEW) {
+    if (this.mode === MapMode.VIEW && this.hasWKTToRender()) {
       this.renderWKT();
     }
   }
@@ -231,7 +255,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
 
   private exitEditMode(): void {
     this.mapService.disableDrawing();
-    if (this.wkt) {
+    if (this.hasWKTToRender()) {
       this.renderWKT();
     } else {
       this.mapService.clearFeatures();
@@ -289,19 +313,63 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
 
   private shouldRenderWKT(changes: SimpleChanges): boolean {
     const hasWktChange = !!changes['wkt'];
+    const hasWktListChange = !!changes['wktList'];
     const hasMap = !!this.mapService.getMap();
-    return hasMap &&
-      this.mode === MapMode.VIEW &&
-      hasWktChange &&
-      !!changes['wkt'].currentValue;
+    
+    if (!hasMap || this.mode !== MapMode.VIEW) {
+      return false;
+    }
+
+    const currentWktList = hasWktListChange ? changes['wktList']?.currentValue : this.wktList;
+    const currentWkt = hasWktChange ? changes['wkt']?.currentValue : this.wkt;
+
+    // Check wktList first (priority)
+    if (hasWktListChange) {
+      if (Array.isArray(currentWktList) && currentWktList.length > 0) {
+        return true;
+      }
+      // If wktList was cleared and wkt exists, render wkt
+      if ((!Array.isArray(currentWktList) || currentWktList.length === 0) && currentWkt) {
+        return true;
+      }
+    }
+
+    // Check wkt only if wktList is not provided or empty
+    if (hasWktChange) {
+      if (currentWkt && (!currentWktList || !Array.isArray(currentWktList) || currentWktList.length === 0)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private shouldClearWKT(changes: SimpleChanges): boolean {
     const hasWktChange = !!changes['wkt'];
+    const hasWktListChange = !!changes['wktList'];
     const hasMap = !!this.mapService.getMap();
-    return hasMap &&
-      this.mode === MapMode.VIEW &&
-      hasWktChange &&
-      !changes['wkt'].currentValue;
+    
+    if (!hasMap || this.mode !== MapMode.VIEW) {
+      return false;
+    }
+
+    const currentWktList = hasWktListChange ? changes['wktList']?.currentValue : this.wktList;
+    const currentWkt = hasWktChange ? changes['wkt']?.currentValue : this.wkt;
+
+    // Check if wktList was cleared
+    if (hasWktListChange) {
+      if (!Array.isArray(currentWktList) || currentWktList.length === 0) {
+        // Only clear if wkt is also empty
+        return !currentWkt;
+      }
+    }
+
+    // Check if wkt was cleared
+    if (hasWktChange && !currentWkt) {
+      // Only clear if wktList is also empty
+      return !currentWktList || !Array.isArray(currentWktList) || currentWktList.length === 0;
+    }
+
+    return false;
   }
 }

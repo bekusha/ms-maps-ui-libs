@@ -10,6 +10,7 @@ import Feature from 'ol/Feature';
 import { fromLonLat } from 'ol/proj';
 import WKT from 'ol/format/WKT';
 import Attribution from 'ol/control/Attribution';
+import { isEmpty } from 'ol/extent';
 import { Style, Stroke, Fill, Circle } from 'ol/style';
 import Draw from 'ol/interaction/Draw';
 import { EventsKey } from 'ol/events';
@@ -108,6 +109,50 @@ export class MapService {
   }
 
   /**
+   * Render multiple WKT geometries on the map
+   */
+  renderWKTList(wktFeatures: WKTFeature[]): boolean {
+    if (!wktFeatures || !Array.isArray(wktFeatures) || wktFeatures.length === 0 || !this.vectorLayer || !this.map) {
+      console.warn('Cannot render WKT list: map, vector layer, or WKT list not available');
+      return false;
+    }
+
+    try {
+      const format = new WKT();
+      const vectorSource = this.vectorLayer.getSource();
+      if (!vectorSource) {
+        return false;
+      }
+
+      // Clear existing features
+      vectorSource.clear();
+
+      // Add all features
+      let hasValidFeature = false;
+      for (const wktFeature of wktFeatures) {
+        if (!wktFeature || !wktFeature.wkt) {
+          continue;
+        }
+        try {
+          const feature = format.readFeature(wktFeature.wkt, {
+            dataProjection: wktFeature.dataProjection || 'EPSG:4326',
+            featureProjection: wktFeature.featureProjection || 'EPSG:3857',
+          });
+          vectorSource.addFeature(feature);
+          hasValidFeature = true;
+        } catch (error) {
+          console.error('Error parsing WKT:', error, wktFeature);
+        }
+      }
+
+      return hasValidFeature;
+    } catch (error) {
+      console.error('Error rendering WKT list:', error);
+      return false;
+    }
+  }
+
+  /**
    * Fit the map view to the current features
    */
   fitToFeatures(options?: MapViewOptions): void {
@@ -119,6 +164,14 @@ export class MapService {
     const vectorSource = this.vectorLayer.getSource();
     if (vectorSource) {
       const extent = vectorSource.getExtent();
+      
+      // Validate extent: check if it's valid and not empty
+      // isEmpty returns true if extent is infinite or invalid
+      if (isEmpty(extent)) {
+        console.warn('Cannot fit to features: extent is empty or invalid (no features in source)');
+        return;
+      }
+
       this.map.getView().fit(extent, {
         padding: options?.padding || [20, 20, 20, 20],
         maxZoom: options?.maxZoom || 16,

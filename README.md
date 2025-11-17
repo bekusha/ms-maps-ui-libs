@@ -89,7 +89,8 @@ export class ExampleComponent {
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
-| `wkt` | `string` | `''` | WKT geometry string to render |
+| `wkt` | `string` | `''` | WKT geometry string to render (single geometry). If `wktList` is provided, this is ignored. |
+| `wktList` | `string[]` | `[]` | Array of WKT geometry strings to render multiple geometries. Takes priority over `wkt`. |
 | `center` | `[number, number]` | `[0, 0]` | Map center coordinates [longitude, latitude] |
 | `zoom` | `number` | `10` | Initial zoom level |
 | `width` | `string` | `'100%'` | Map container width |
@@ -117,6 +118,8 @@ export class ExampleComponent {
 
 ## WKT Examples
 
+### Single Geometry
+
 ```typescript
 // Point
 const pointWKT = 'POINT(-74.006 40.7128)';
@@ -127,6 +130,27 @@ const lineWKT = 'LINESTRING(-74.006 40.7128, -73.935 40.730, -73.990 40.750)';
 // Polygon
 const polygonWKT = 'POLYGON((-74.020 40.700, -74.000 40.700, -74.000 40.720, -74.020 40.720, -74.020 40.700))';
 ```
+
+### Multiple Geometries
+
+You can render multiple geometries using the `wktList` input:
+
+```typescript
+@Component({
+  template: `
+    <ms-map [wktList]="geometries" [zoom]="12"></ms-map>
+  `
+})
+export class MyComponent {
+  geometries = [
+    'POINT(-74.006 40.7128)',
+    'POINT(-73.935 40.730)',
+    'POLYGON((-74.020 40.700, -74.000 40.700, -74.000 40.720, -74.020 40.720, -74.020 40.700))'
+  ];
+}
+```
+
+**Note**: `wktList` takes priority over `wkt`. If both are provided, only `wktList` will be rendered.
 
 ## Browser Support
 
