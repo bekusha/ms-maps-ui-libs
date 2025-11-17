@@ -83,7 +83,8 @@ Then use in your component template:
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `wkt` | `string` | `''` | Well-Known Text geometry string |
+| `wkt` | `string` | `''` | Well-Known Text geometry string (single geometry). If `wktList` is provided, this is ignored. |
+| `wktList` | `string[]` | `[]` | Array of WKT geometry strings to render multiple geometries. Takes priority over `wkt`. |
 | `width` | `string` | `'100%'` | Map container width |
 | `height` | `string` | `'400px'` | Map container height |
 | `zoom` | `number` | `10` | Initial zoom level |
@@ -202,20 +203,52 @@ interface MapConfig {
 
 ## WKT Examples
 
-### Point
+### Single Geometry (using `wkt`)
+
 ```typescript
+// Point
 wkt = 'POINT(-74.006 40.7128)';
-```
 
-### LineString
-```typescript
+// LineString
 wkt = 'LINESTRING(-74.006 40.7128, -73.935 40.730, -73.990 40.750)';
-```
 
-### Polygon
-```typescript
+// Polygon
 wkt = 'POLYGON((-74.020 40.700, -74.000 40.700, -74.000 40.720, -74.020 40.720, -74.020 40.700))';
 ```
+
+### Multiple Geometries (using `wktList`)
+
+You can render multiple geometries at once using the `wktList` input. The `wktList` takes priority over `wkt` if both are provided.
+
+```typescript
+import { Component } from '@angular/core';
+import { MapComponent } from 'ms-maps-map-viewer';
+
+@Component({
+  selector: 'app-my-component',
+  standalone: true,
+  imports: [MapComponent],
+  template: `
+    <ms-map 
+      [wktList]="geometries"
+      [center]="[44.7872, 41.7151]"
+      [zoom]="12"
+      width="100%"
+      height="500px">
+    </ms-map>
+  `
+})
+export class MyComponent {
+  geometries = [
+    'POINT(44.7872 41.7151)', // Tbilisi center
+    'POINT(44.8 41.72)', // Nearby point
+    'POLYGON((44.79605 41.72667, 44.79520 41.72742, 44.79345 41.72699, 44.79395 41.72602, 44.79605 41.72667))',
+    'LINESTRING(44.78 41.71, 44.79 41.72, 44.80 41.71)'
+  ];
+}
+```
+
+**Note**: When `wktList` is provided and contains geometries, the `wkt` input is ignored. The map will automatically fit to show all geometries in the list.
 
 ## Styling
 
