@@ -14,6 +14,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
   @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef;
   @Input() wkt: string = '';
   @Input() wktList: string[] = [];
+  @Input() zoomToWkt: string = '';
   @Input() width: string = '100%';
   @Input() height: string = '400px';
   @Input() zoom: number = 10;
@@ -65,6 +66,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
       this.mapService.clearFeatures();
     }
     
+    // Handle zoomToWkt changes
+    if (changes['zoomToWkt'] && this.mapService.getMap()) {
+      const currentValue = changes['zoomToWkt'].currentValue;
+      const previousValue = changes['zoomToWkt'].previousValue;
+      // Only handle if value changed and is not empty
+      if (currentValue !== previousValue && currentValue) {
+        this.handleZoomToWkt();
+      }
+    }
+    
     // Handle center and zoom changes
     if (this.mapService.getMap() && (changes['center'] || changes['zoom'])) {
       this.updateMapView();
@@ -91,6 +102,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
       this.renderWKT();
     } else if (this.mode === MapMode.EDIT) {
       this.enterEditMode();
+    }
+    
+    // Handle zoomToWkt if set during initialization
+    if (this.zoomToWkt) {
+      this.handleZoomToWkt();
     }
   }
 
@@ -371,5 +387,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges
     }
 
     return false;
+  }
+
+  private handleZoomToWkt(): void {
+    this.mapService.zoomToWkt(this.zoomToWkt);
   }
 }
