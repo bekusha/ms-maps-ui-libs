@@ -85,6 +85,7 @@ Then use in your component template:
 |----------|------|---------|-------------|
 | `wkt` | `string` | `''` | Well-Known Text geometry string (single geometry). If `wktList` is provided, this is ignored. |
 | `wktList` | `string[]` | `[]` | Array of WKT geometry strings to render multiple geometries. Takes priority over `wkt`. |
+| `zoomToWkt` | `string` | `''` | WKT geometry string to zoom to without rendering. The map will automatically zoom to fit this geometry when the value changes. |
 | `width` | `string` | `'100%'` | Map container width |
 | `height` | `string` | `'400px'` | Map container height |
 | `zoom` | `number` | `10` | Initial zoom level |
@@ -249,6 +250,38 @@ export class MyComponent {
 ```
 
 **Note**: When `wktList` is provided and contains geometries, the `wkt` input is ignored. The map will automatically fit to show all geometries in the list.
+
+### Zoom to WKT (without rendering)
+
+The `zoomToWkt` input allows you to zoom the map to a WKT geometry without rendering it. This is useful when you want to navigate to a location without displaying it on the map.
+
+```typescript
+import { Component } from '@angular/core';
+import { MapComponent } from 'ms-maps-map-viewer';
+
+@Component({
+  selector: 'app-my-component',
+  standalone: true,
+  imports: [MapComponent],
+  template: `
+    <ms-map 
+      [zoomToWkt]="targetWkt"
+      width="100%"
+      height="500px">
+    </ms-map>
+  `
+})
+export class MyComponent {
+  targetWkt = 'POINT(44.7872 41.7151)'; // Tbilisi center
+  
+  // You can change this value dynamically
+  navigateToLocation(wkt: string): void {
+    this.targetWkt = wkt;
+  }
+}
+```
+
+**Note**: The `zoomToWkt` input is reactive - when its value changes, the map will automatically zoom to the new geometry. The geometry is not rendered on the map, only used for zooming.
 
 ## Styling
 

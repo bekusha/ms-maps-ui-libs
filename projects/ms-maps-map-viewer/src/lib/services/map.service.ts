@@ -181,6 +181,45 @@ export class MapService {
   }
 
   /**
+   * Zoom to a WKT geometry without rendering it on the map
+   */
+  zoomToWkt(wkt: string, options?: MapViewOptions): boolean {
+    if (!wkt || !this.map) {
+      console.warn('Cannot zoom to WKT: map not available or WKT is empty');
+      return false;
+    }
+
+    try {
+      // Clear any existing drawn features before zooming
+      this.clearFeatures();
+
+      const format = new WKT();
+      const geometry = format.readGeometry(wkt, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
+      });
+
+      const extent = geometry.getExtent();
+      
+      if (isEmpty(extent)) {
+        console.warn('Cannot zoom to WKT: extent is empty or invalid');
+        return false;
+      }
+
+      this.map.getView().fit(extent, {
+        padding: options?.padding || [20, 20, 20, 20],
+        maxZoom: options?.maxZoom || 16,
+        duration: options?.duration || 1000,
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Error zooming to WKT:', error);
+      return false;
+    }
+  }
+
+  /**
    * Update map view with new center and zoom
    */
   updateMapView(center: [number, number], zoom: number): void {

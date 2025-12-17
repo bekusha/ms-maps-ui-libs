@@ -15,6 +15,8 @@ export class App implements OnInit{
   public useWktList = signal<boolean>(false);
   public mapConfig = signal<Partial<MapConfig> | null>(null);
   public mapMode = signal<MapMode>(MapMode.EDIT);
+  public zoomToWkt = signal<string>('');
+  public zoomToWktInput = signal<string>('');
   public readonly MapMode = MapMode;
   public readonly EditToolType = EditToolType;
   // latest draw event from the map component
@@ -118,5 +120,12 @@ export class App implements OnInit{
     this.wktGeometry.set(null);
     // Load scattered geometries from different regions
     this.wktList.set([...this.scatteredWktList]);
+  }
+
+  public zoomToWktFromInput(): void {
+    const wkt = this.zoomToWktInput().trim();
+    if (wkt) {
+      this.zoomToWkt.set(wkt);
+    }
   }
 }

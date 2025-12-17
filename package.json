@@ -7,7 +7,9 @@
     "build": "ng build",
     "build:ms-maps-map-viewer": "ng build ms-maps-map-viewer",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "publish:public": "npm run build:ms-maps-map-viewer && cd ./dist/ms-maps-map-viewer && npm publish --registry=https://registry.npmjs.org/",
+    "publish:custom": "npm run build:ms-maps-map-viewer && cd ./dist/ms-maps-map-viewer && npm publish --scope=@msda --registry=https://npm.msda.ge/"
   },
   "prettier": {
     "printWidth": 100,

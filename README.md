@@ -91,6 +91,7 @@ export class ExampleComponent {
 |-------|------|---------|-------------|
 | `wkt` | `string` | `''` | WKT geometry string to render (single geometry). If `wktList` is provided, this is ignored. |
 | `wktList` | `string[]` | `[]` | Array of WKT geometry strings to render multiple geometries. Takes priority over `wkt`. |
+| `zoomToWkt` | `string` | `''` | WKT geometry string to zoom to without rendering. The map will automatically zoom to fit this geometry when the value changes. |
 | `center` | `[number, number]` | `[0, 0]` | Map center coordinates [longitude, latitude] |
 | `zoom` | `number` | `10` | Initial zoom level |
 | `width` | `string` | `'100%'` | Map container width |
